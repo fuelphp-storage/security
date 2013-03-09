@@ -1,1 +1,1 @@
-# FuelPHP Validation library.
+# FuelPHP Security library.
