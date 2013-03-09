@@ -1,0 +1,25 @@
+{
+	"name": "fuelphp/security",
+	"type": "library",
+	"description": ".",
+	"keywords": ["Security", "Crypt", "Hash"],
+	"homepage": "https://github.com/fuelphp/security",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "FuelPHP Development Team",
+			"email": "team@fuelphp.com"
+		}
+	],
+	"require": {
+		"php": ">=5.3.3",
+		"phpseclib/phpseclib": "dev-master"
+	},
+	"require-dev": {
+		"mockery/mockery": "0.7.*"
+	},
+	"autoload": {
+		"psr-0": { "FuelPHP\\Security": "src/" }
+	},
+	"minimum-stability": "dev"
+}
