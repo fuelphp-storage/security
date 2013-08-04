@@ -1,6 +1,6 @@
 <?php
 /**
- * @package    Fuel\Foundation
+ * @package    Fuel\Security
  * @version    2.0
  * @author     Fuel Development Team
  * @license    MIT License
@@ -8,14 +8,14 @@
  * @link       http://fuelphp.com
  */
 
-namespace Fuel\Foundation\Security\Filter;
+namespace Fuel\Security\Filter;
 
 /**
- * Base Filter Security class
+ * Security Base Filter class
  *
  * Basis for classes dealing with filtering variables for security purposes.
  *
- * @package  Fuel\Foundation
+ * @package  Fuel\Security
  *
  * @since    2.0.0
  */

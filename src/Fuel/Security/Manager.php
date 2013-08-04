@@ -29,6 +29,13 @@ class Manager
 	protected $app;
 
 	/**
+	 * @var  Csrf  this objects csrf instance
+	 *
+	 * @since  2.0.0
+	 */
+	protected $csrf;
+
+	/**
 	 * @var  array  list of loaded security filters
 	 *
 	 * @since  2.0.0
@@ -56,6 +63,21 @@ class Manager
 
 		// load the security configuration
 		$this->app->getConfig()->load('security', true);
+	}
+
+	/**
+	 * Get a Csrf instance
+	 *
+	 * @return Csrf
+	 */
+	public function csrf()
+	{
+		if ( ! $this->csrf)
+		{
+			$this->csrf = \Dependency::resolve('security.csrf', array($this->app, $this));
+		}
+
+		return $this->csrf;
 	}
 
 	/**
@@ -205,7 +227,7 @@ class Manager
 		{
 			try
 			{
-				if ($obj = \Dependency::resolve('Fuel\Foundation\Security\Filter\\'.$filter, array($this->app, $this)))
+				if ($obj = \Dependency::resolve('Fuel\Security\Filter\\'.$filter, array($this->app, $this)))
 				{
 					$this->filters[strtolower($filter)] = $obj;
 

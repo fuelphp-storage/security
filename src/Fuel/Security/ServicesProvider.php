@@ -27,7 +27,7 @@ class ServicesProvider extends ServiceProvider
 	/**
 	 * @var  array  list of service names provided by this provider
 	 */
-	public $provides = array('security');
+	public $provides = array('security', 'security.csrf');
 
 	/**
 	 * Service provider definitions
@@ -38,6 +38,12 @@ class ServicesProvider extends ServiceProvider
 		$this->register('security', function ($dic, Application $app)
 		{
 			return new Manager($app);
+		});
+
+		// \Fuel\Security\Csrf
+		$this->register('security.csrf', function ($dic, Application $app, Manager $manager)
+		{
+			return new Csrf($app, $manager);
 		});
 	}
 }

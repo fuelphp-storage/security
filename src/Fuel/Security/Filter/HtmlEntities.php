@@ -1,6 +1,6 @@
 <?php
 /**
- * @package    Fuel\Foundation
+ * @package    Fuel\Security
  * @version    2.0
  * @author     Fuel Development Team
  * @license    MIT License
@@ -8,14 +8,14 @@
  * @link       http://fuelphp.com
  */
 
-namespace Fuel\Foundation\Security\Filter;
+namespace Fuel\Security\Filter;
 
 /**
- * HTML entities Security filter class
+ * Security HTML entities filter class
  *
  * Uses htmlentities() to encode variables for safer output.
  *
- * @package  Fuel\Foundation
+ * @package  Fuel\Security
  *
  * @since    2.0.0
  */
