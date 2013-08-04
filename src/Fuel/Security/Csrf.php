@@ -16,7 +16,9 @@ use Fuel\Security\Manager;
 /**
  * Security Csrf class
  *
- * Implements measures against Csrf attacks
+ * Implements measures against Csrf attacks. Code based on the examples provided
+ * by OWASP (https://www.owasp.org/index.php/PHP_CSRF_Guard), but improved to
+ * cover security issues in those examples.
  *
  * @package  Fuel\Security
  *
@@ -86,24 +88,28 @@ class Csrf
 	 */
 	public function getToken($form_id)
 	{
-		if (function_exists("hash_algos") and in_array("sha256",hash_algos()))
+		// re-use an already issued (and still valid) token if possible
+		if ( ! $token = $this->sessionRetrieve($form_id))
 		{
-			// generate a random token using sha256
-			$token = hash("sha256",mt_rand(0,mt_getrandmax()));
-		}
-		else
-		{
-			// use a randomizer algorithm if we don't have hash-sha256 available
-			$token='';
-			for ($i=0;$i<64;++$i)
+			if (function_exists("hash_algos") and in_array("sha256",hash_algos()))
 			{
-				$r=mt_rand(0,35);
-				$token .= $r<26 ? chr(ord('a')+$r) : chr(ord('0')+$r-26);
+				// generate a random token using sha256
+				$token = hash("sha256",mt_rand(0,mt_getrandmax()));
 			}
-		}
+			else
+			{
+				// use a randomizer algorithm if we don't have hash-sha256 available
+				$token='';
+				for ($i=0;$i<64;++$i)
+				{
+					$r=mt_rand(0,35);
+					$token .= $r<26 ? chr(ord('a')+$r) : chr(ord('0')+$r-26);
+				}
+			}
 
-		// store it in the session
-		$this->sessionStore($form_id, $token);
+			// store it in the session
+			$this->sessionStore($form_id, $token);
+		}
 
 		return $token;
 	}
