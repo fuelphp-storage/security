@@ -1,8 +1,8 @@
 {
 	"name": "fuelphp/security",
 	"type": "library",
-	"description": ".",
-	"keywords": ["Security", "Crypt", "Hash"],
+	"description": "FuelPHP Framework security and encryption library.",
+	"keywords": ["Security", "Crypt", "Hash", "SSH", "PHPSecLib"],
 	"homepage": "https://github.com/fuelphp/security",
 	"license": "MIT",
 	"authors": [
@@ -12,14 +12,14 @@
 		}
 	],
 	"require": {
-		"php": ">=5.3.3",
+		"php": ">=5.4",
 		"phpseclib/phpseclib": "dev-master"
 	},
 	"require-dev": {
 		"mockery/mockery": "0.7.*"
 	},
 	"autoload": {
-		"psr-0": { "FuelPHP\\Security": "src/" }
+		"psr-0": { "Fuel\\Security": "src/" }
 	},
 	"minimum-stability": "dev"
 }
