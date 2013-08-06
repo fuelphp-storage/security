@@ -30,9 +30,9 @@ class HtmlEntities extends Base
 	{
 		return htmlentities(
 			$input,
-			$this->app->getConfig()->get('security.htmlentities_flags', ENT_QUOTES),
-			$this->app->getEnvironment()->encoding,
-			$this->app->getConfig()->get('security.htmlentities_double_encode', false)
+			$this->parent->getConfig('htmlentities_flags', ENT_QUOTES),
+			$this->parent->getConfig('htmlentities_encoding', 'UTF-8'),
+			$this->parent->getConfig('htmlentities_double_encode', false)
 		);
 	}
 }

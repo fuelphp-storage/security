@@ -27,7 +27,10 @@ class ServicesProvider extends ServiceProvider
 	/**
 	 * @var  array  list of service names provided by this provider
 	 */
-	public $provides = array('security', 'security.csrf');
+	public $provides = array('security',
+		'security.filter.htmlentities',
+		'security.csrf'
+	);
 
 	/**
 	 * Service provider definitions
@@ -35,15 +38,21 @@ class ServicesProvider extends ServiceProvider
 	public function provide()
 	{
 		// \Fuel\Security\Manager
-		$this->register('security', function ($dic, Application $app)
+		$this->register('security', function ($dic, Array $config = array())
 		{
-			return new Manager($app);
+			return new Manager($config);
+		});
+
+		// \Fuel\Security\Filter\HtmlEntities
+		$this->register('security.filter.htmlentities', function ($dic, Manager $manager)
+		{
+			return new Filter\HtmlEntities($manager);
 		});
 
 		// \Fuel\Security\Csrf
-		$this->register('security.csrf', function ($dic, Application $app, Manager $manager)
+		$this->register('security.csrf', function ($dic, Array $config = array(), $session = null)
 		{
-			return new Csrf($app, $manager);
+			return new Csrf($config, $session);
 		});
 	}
 }

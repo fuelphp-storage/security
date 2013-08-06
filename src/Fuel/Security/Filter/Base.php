@@ -22,13 +22,6 @@ namespace Fuel\Security\Filter;
 abstract class Base
 {
 	/**
-	 * @var  Application
-	 *
-	 * @since  2.0.0
-	 */
-	protected $app;
-
-	/**
 	 * @var  Security  parent security class that spawned this filter
 	 *
 	 * @since  2.0.0
@@ -40,9 +33,8 @@ abstract class Base
 	 *
 	 * @since  2.0.0
 	 */
-	public function __construct($app, $parent)
+	public function __construct($parent)
 	{
-		$this->app    = $app;
 		$this->parent = $parent;
 	}
 
@@ -82,7 +74,7 @@ abstract class Base
 		elseif (is_object($input))
 		{
 			// Check if the object is whitelisted and just return when that's the case
-			foreach ($this->app->getConfig()->get('security.whitelistedClasses', array()) as $class)
+			foreach ($this->parent->getConfig('whitelistedClasses', array()) as $class)
 			{
 				if (is_a($input, $class))
 				{

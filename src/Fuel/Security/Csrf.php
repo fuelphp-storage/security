@@ -10,15 +10,8 @@
 
 namespace Fuel\Security;
 
-use Fuel\Foundation\Application;
-use Fuel\Security\Manager;
-
 /**
- * Security Csrf class
- *
- * Implements measures against Csrf attacks. Code based on the examples provided
- * by OWASP (https://www.owasp.org/index.php/PHP_CSRF_Guard), but improved to
- * cover security issues in those examples.
+ * Security Csrf Manager class
  *
  * @package  Fuel\Security
  *
@@ -27,18 +20,11 @@ use Fuel\Security\Manager;
 class Csrf
 {
 	/**
-	 * @var  Application  application that owns the security manager
+	 * @var  array  Security configuration
 	 *
 	 * @since  2.0.0
 	 */
-	protected $app;
-
-	/**
-	 * @var  Manager  security manager that spawned this filter
-	 *
-	 * @since  2.0.0
-	 */
-	protected $parent;
+	protected $config = array();
 
 	/**
 	 * @var  Fuel\Session\Manager
@@ -48,115 +34,88 @@ class Csrf
 	protected $session;
 
 	/**
-	 * @var  string  key to indicate where to store tokens in the session
+	 * @var  Fuel\Security\Csrf\Driver
 	 *
 	 * @since  2.0.0
 	 */
-	protected $sessionKey;
+	protected $driver;
 
 	/**
 	 * Constructor
 	 *
-	 * @param  Application  $app     This class' application object
-	 * @param  Manager      $parent  This class' security manager object
+	 * @param  string               $driver  Csrf driver name or FQCN
+	 * @param  Fuel\Session\Manager $session Optional session driver instance
 	 *
 	 * @throws  RuntimeException  if the application does not have sessions activated
 	 *
 	 * @since  2.0.0
 	 */
-	public function __construct(Application $app, Manager $parent)
+	public function __construct(Array $config = array(), \Fuel\Session\Manager $session = null)
 	{
-		if ( ! $this->session = $app->getSession())
+		// store the config
+		$this->config = $config;
+
+		// store the session object passed
+		$this->session = $session;
+
+		// get the required driver from the config
+		if ( ! isset($config['csrf']['driver']))
 		{
-			throw new \RuntimeException('Your application "'.$app->getName().'" does not have sessions active. This is required for CSRF mitigation functionality');
+			throw new \RuntimeException('The applications security configuration doesn\'t define a CSRF mitigation driver.');
 		}
 
-		// store the objects passed
-		$this->app    = $app;
-		$this->parent = $parent;
+		// get us a driver instance
+		$class = strpos($config['csrf']['driver'], '\\') === false ? 'Fuel\Security\Csrf\\'.ucfirst($config['csrf']['driver']) : $config['csrf']['driver'];
 
-		// generate a session key to store the generated csrf tokens
-		$this->sessionKey = 'fuel.'.$this->app->getName().'.csrftokens';
-	}
-
-	/**
-	 * Generate a unique CSRF token for the given form identification
-	 *
-	 * @param  string  $form_id  Unique identification of the form to protect
-	 *
-	 * @since  2.0.0
-	 */
-	public function getToken($form_id)
-	{
-		// re-use an already issued (and still valid) token if possible
-		if ( ! $token = $this->sessionRetrieve($form_id))
+		if ( ! class_exists($class))
 		{
-			if (function_exists("hash_algos") and in_array("sha256",hash_algos()))
-			{
-				// generate a random token using sha256
-				$token = hash("sha256",mt_rand(0,mt_getrandmax()));
-			}
-			else
-			{
-				// use a randomizer algorithm if we don't have hash-sha256 available
-				$token='';
-				for ($i=0;$i<64;++$i)
-				{
-					$r=mt_rand(0,35);
-					$token .= $r<26 ? chr(ord('a')+$r) : chr(ord('0')+$r-26);
-				}
-			}
-
-			// store it in the session
-			$this->sessionStore($form_id, $token);
+			throw new \RuntimeException('Requested CSRF mitigation driver "'.$config['csrf']['driver'].'" does not exist.');
 		}
 
-		return $token;
+		$this->driver = new $class($this);
 	}
 
 	/**
-	 * Validate a given token
+	 * Capture method calls so we can pass them on to the loaded driver
 	 *
-	 * @param  string  $form_id  Unique identification of the form to protect
-	 * @param  string  $token    Token to validate
+	 * @param  string  $name       name of the method to call on the driver
+	 * @params mixed   $arguments  argument list to pass on
 	 *
-	 * @since  2.0.0
+	 * @throws InvalidArgumentException  if the method is not callable on the driver
+	 *
+	 * @return mixed
 	 */
-	public function validateToken($form_id, $token)
+	public function __call($name, $arguments)
 	{
-		return $token === $this->sessionRetrieve($form_id);
-	}
-
-	/**
-	 * Store a token in the session
-	 *
-	 * @param  string  $form_id  Unique identification of the form to protect
-	 * @param  string  $token    Token to validate
-	 *
-	 * @since  2.0.0
-	 */
-	protected function sessionStore($form_id, $token)
-	{
-		$keys = $this->session->get($this->sessionKey, array());
-		$keys[$form_id] = $token;
-		$this->session->set($this->sessionKey, $keys);
-	}
-
-	/**
-	 * Get a token from the session
-	 *
-	 * @param  string  $form_id  Unique identification of the form to protect
-	 *
-	 * @since  2.0.0
-	 */
-	protected function sessionRetrieve($form_id)
-	{
-		if ($token = $this->session->get($this->sessionKey.'.'.$form_id, false))
+		if (is_callable(array($this->driver, $name)))
 		{
-			$this->session->delete($this->sessionKey.'.'.$form_id);
+			return call_user_func_array(array($this->driver, $name), $arguments);
 		}
 
-		return $token;
+		throw new \InvalidArgumentException('There is no CSRF driver method called "'.$name.'".');
 	}
 
+	/**
+	 * Get the session manager instance used for this Csrf manager
+	 *
+	 * @return  Fuel\Session\Manager
+	 *
+	 * @since  2.0.0
+	 */
+	public function getSession()
+	{
+		return $this->session;
+	}
+
+	/**
+	 * Pass a session manager instance to the Csrf manager at runtime
+	 *
+	 * @param  Fuel\Session\Manager  $session  Session manager instance
+	 *
+	 * @since  2.0.0
+	 */
+	public function setSession($session)
+	{
+		$this->session = $session;
+	}
 }

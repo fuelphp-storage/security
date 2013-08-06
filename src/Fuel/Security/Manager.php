@@ -22,11 +22,11 @@ namespace Fuel\Security;
 class Manager
 {
 	/**
-	 * @var  Application  this objects application instance
+	 * @var  array  Security configuration
 	 *
 	 * @since  2.0.0
 	 */
-	protected $app;
+	protected $config = array();
 
 	/**
 	 * @var  Csrf  this objects csrf instance
@@ -52,17 +52,30 @@ class Manager
 	/**
 	 * Setup the application security object.
 	 *
+	 * @param  array  $config  Security configuration array
+	 *
 	 * @return  void
 	 *
 	 * @since  2.0.0
 	 */
-	public function __construct($app)
+	public function __construct(Array $config = array())
 	{
-		// store this app's instance
-		$this->app = $app;
+		// store the config passed
+		$this->config = $config;
 
-		// load the security configuration
-		$this->app->getConfig()->load('security', true);
+		// make sure required config keys exist
+		if ( ! isset($this->config['uri_filter']))
+		{
+			$this->config['uri_filter'] = array();
+		}
+		if ( ! isset($this->config['input_filter']))
+		{
+			$this->config['input_filter'] = array();
+		}
+		if ( ! isset($this->config['output_filter']))
+		{
+			$this->config['output_filter'] = array();
+		}
 	}
 
 	/**
@@ -74,7 +87,7 @@ class Manager
 	{
 		if ( ! $this->csrf)
 		{
-			$this->csrf = \Dependency::resolve('security.csrf', array($this->app, $this));
+			$this->csrf = \Dependency::resolve('security.csrf', array($this->config, \Application::getInstance()->getSession()));
 		}
 
 		return $this->csrf;
@@ -88,7 +101,7 @@ class Manager
 	 */
 	public function cleanUri($uri, $strict = false)
 	{
-		$filters = $this->app->getConfig()->get('security.uri_filter', array());
+		$filters = $this->config['uri_filter'];
 		$filters = is_array($filters) ? $filters : array($filters);
 
 		if ($strict)
@@ -107,10 +120,13 @@ class Manager
 	 * @param  string $type    default filter definition to apply if no filters are given
 	 *
 	 */
-	public function clean($var, $filters = null, $type = 'security.input_filter')
+	public function clean($var, $filters = null, $type = 'input_filter')
 	{
 		// if no filters are given, load the defaults from config
-		is_null($filters) and $filters = $this->app->getConfig()->get($type, array());
+		if ($filters === null)
+		{
+			$filters = isset($this->config[$type]) ? $this->config[$type] : array();
+		}
 
 		// and make sure it's an array
 		$filters = is_array($filters) ? $filters : array($filters);
@@ -227,7 +243,7 @@ class Manager
 		{
 			try
 			{
-				if ($obj = \Dependency::resolve('Fuel\Security\Filter\\'.$filter, array($this->app, $this)))
+				if ($obj = \Dependency::resolve('security.filter.'.strtolower($filter), array($this)))
 				{
 					$this->filters[strtolower($filter)] = $obj;
 
@@ -242,6 +258,17 @@ class Manager
 		}
 
 		return false;
+	}
+
+	/**
+	 * @param  string  $key      config array key
+	 * @param  mixed   $default  value to return if the key doesn't exist
+	 *
+	 * @return mixed
+	 */
+	public function getConfig($key, $default)
+	{
+		return isset($this->config[$key]) ? $this->config[$key] : $default;
 	}
 
 	/**
