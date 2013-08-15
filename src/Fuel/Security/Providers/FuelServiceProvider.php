@@ -8,21 +8,18 @@
  * @link       http://fuelphp.com
  */
 
-namespace Fuel\Security;
+namespace Fuel\Security\Providers;
 
 use Fuel\Dependency\ServiceProvider;
-use Fuel\Foundation\Application;
 
 /**
- * ServicesProvider class
- *
- * Defines the services published by this namespace to the DiC
+ * FuelPHP ServiceProvider class for this package
  *
  * @package  Fuel\Security
  *
  * @since  1.0.0
  */
-class ServicesProvider extends ServiceProvider
+class FuelServiceProvider extends ServiceProvider
 {
 	/**
 	 * @var  array  list of service names provided by this provider
@@ -40,19 +37,19 @@ class ServicesProvider extends ServiceProvider
 		// \Fuel\Security\Manager
 		$this->register('security', function ($dic, Array $config = array())
 		{
-			return new Manager($config);
+			return $dic->resolve('Fuel\Security\Manager', array($config));
 		});
 
 		// \Fuel\Security\Filter\HtmlEntities
 		$this->register('security.filter.htmlentities', function ($dic, Manager $manager)
 		{
-			return new Filter\HtmlEntities($manager);
+			return $dic->resolve('Fuel\Security\Filter\HtmlEntities', array($manager));
 		});
 
 		// \Fuel\Security\Csrf
 		$this->register('security.csrf', function ($dic, Array $config = array(), $session = null)
 		{
-			return new Csrf($config, $session);
+			return $dic->resolve('Fuel\Security\Csrf', array($config, $session));
 		});
 	}
 }
