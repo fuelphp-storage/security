@@ -37,6 +37,18 @@ class FuelServiceProvider extends ServiceProvider
 		// \Fuel\Security\Manager
 		$this->register('security', function ($dic, Array $config = array())
 		{
+			$stack = $this->container->resolve('requeststack');
+			if ($request = $stack->top())
+			{
+				$instance = $request->getApplication()->getConfig();
+			}
+			else
+			{
+				$instance = $this->container->resolve('application.main')->getConfig();
+			}
+
+			$config = \Arr::merge($instance->load('security', true), $config);
+
 			return $dic->resolve('Fuel\Security\Manager', array($config));
 		});
 
