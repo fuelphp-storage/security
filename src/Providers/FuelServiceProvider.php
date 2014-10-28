@@ -44,7 +44,7 @@ class FuelServiceProvider extends ServiceProvider
 			}
 			else
 			{
-				$instance = $dic->resolve('application::__main')->getComponent();
+				$instance = $dic->resolve('application::__main')->getRootComponent();
 			}
 
 			$config = \Arr::merge($instance->getConfig()->load('security', true), $config);
