@@ -4,7 +4,7 @@
  * @version    2.0
  * @author     Fuel Development Team
  * @license    MIT License
- * @copyright  2010 - 2014 Fuel Development Team
+ * @copyright  2010 - 2015 Fuel Development Team
  * @link       http://fuelphp.com
  */
 
@@ -14,26 +14,16 @@ use Fuel\Security\Csrf;
 
 /**
  * Security Csrf Driver class
- *
- * @package  Fuel\Security
- *
- * @since    2.0.0
  */
 abstract class Driver
 {
 	/**
-	 * @var  Csrf  security manager that spawned this driver
-	 *
-	 * @since  2.0.0
+	 * @var Csrf
 	 */
 	protected $parent;
 
 	/**
-	 * Constructor
-	 *
-	 * @param  Csrf  $parent  This class' csrf manager object
-	 *
-	 * @since  2.0.0
+	 * @param Csrf $parent
 	 */
 	public function __construct(Csrf $parent)
 	{
@@ -42,30 +32,24 @@ abstract class Driver
 	}
 
 	/**
-	 * Generate a unique CSRF token for the given form identification
+	 * Generates a unique CSRF token for the given form identification
 	 *
-	 * @param  string  $id  Unique identification of the object to protect
-	 *
-	 * @since  2.0.0
+	 * @param string $id
 	 */
 	abstract public function getToken($id);
 
 	/**
-	 * Validate a given token
+	 * Validates a given token
 	 *
-	 * @param  string  $id     Unique identification of the object to protect
-	 * @param  string  $token  Token to validate
-	 *
-	 * @since  2.0.0
+	 * @param string $id
+	 * @param string $token
 	 */
 	abstract public function validateToken($form_id, $token);
 
 	/**
-	 * generate a random token
+	 * Generates a random token
 	 *
-	 * @return  string  the generated token
-	 *
-	 * @since  2.0.0
+	 * @return string
 	 */
 	protected function generateToken()
 	{

@@ -4,7 +4,7 @@
  * @version    2.0
  * @author     Fuel Development Team
  * @license    MIT License
- * @copyright  2010 - 2014 Fuel Development Team
+ * @copyright  2010 - 2015 Fuel Development Team
  * @link       http://fuelphp.com
  */
 
@@ -16,24 +16,16 @@ use Fuel\Security\Csrf;
  * Security Csrf Session class
  *
  * This Csrf driver class uses a session-based token
- *
- * @package  Fuel\Security
- *
- * @since    2.0.0
  */
 class Session extends Driver
 {
 	/**
-	 * @var  string  Key to use to access the session
+	 * @var string
 	 */
 	protected $sessionKey = 'csrf.session-token';
 
 	/**
-	 * Constructor
-	 *
-	 * @param  Csrf  $parent  This class' csrf manager object
-	 *
-	 * @since  2.0.0
+	 * @param Csrf $parent
 	 */
 	public function __construct(Csrf $parent)
 	{
@@ -47,11 +39,7 @@ class Session extends Driver
 	}
 
 	/**
-	 * Generate a unique CSRF token for the given form identification
-	 *
-	 * @param  string  $id  // not used by this driver
-	 *
-	 * @since  2.0.0
+	 * {@inheritdoc}
 	 */
 	public function getToken($id)
 	{
@@ -66,12 +54,7 @@ class Session extends Driver
 	}
 
 	/**
-	 * Validate a given token
-	 *
-	 * @param  string  $id      // not used by this driver
-	 * @param  string  $token  Token to validate
-	 *
-	 * @since  2.0.0
+	 * {@inheritdoc}
 	 */
 	public function validateToken($id, $token)
 	{
@@ -79,25 +62,22 @@ class Session extends Driver
 	}
 
 	/**
-	 * Store a token in the session
+	 * Returns a token from the session
 	 *
-	 * @param  string  $token  Token issued
-	 *
-	 * @since  2.0.0
-	 */
-	protected function sessionStore($token)
-	{
-		$this->parent->getSession()->set($this->sessionKey, $token);
-	}
-
-	/**
-	 * Get a token from the session
-	 *
-	 * @since  2.0.0
+	 * @return string
 	 */
 	protected function sessionRetrieve()
 	{
 		return $this->parent->getSession()->get($this->sessionKey, false);
 	}
 
+	/**
+	 * Stores a token in the session
+	 *
+	 * @param string $token
+	 */
+	protected function sessionStore($token)
+	{
+		$this->parent->getSession()->set($this->sessionKey, $token);
+	}
 }

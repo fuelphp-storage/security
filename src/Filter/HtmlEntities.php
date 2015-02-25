@@ -4,7 +4,7 @@
  * @version    2.0
  * @author     Fuel Development Team
  * @license    MIT License
- * @copyright  2010 - 2014 Fuel Development Team
+ * @copyright  2010 - 2015 Fuel Development Team
  * @link       http://fuelphp.com
  */
 
@@ -14,15 +14,11 @@ namespace Fuel\Security\Filter;
  * Security HTML entities filter class
  *
  * Uses htmlentities() to encode variables for safer output.
- *
- * @package  Fuel\Security
- *
- * @since    2.0.0
  */
 class HtmlEntities extends Base
 {
 	/**
-	 * @param string $input the variable to be cleaned by escaping HTML entities
+	 * @param string $input
 	 *
 	 * @return string
 	 */

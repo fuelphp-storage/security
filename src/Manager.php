@@ -4,7 +4,7 @@
  * @version    2.0
  * @author     Fuel Development Team
  * @license    MIT License
- * @copyright  2010 - 2014 Fuel Development Team
+ * @copyright  2010 - 2015 Fuel Development Team
  * @link       http://fuelphp.com
  */
 
@@ -14,51 +14,33 @@ namespace Fuel\Security;
  * Security Manager class
  *
  * Container for various Security handlers.
- *
- * @package  Fuel\Foundation
- *
- * @since    1.0.0
  */
 class Manager
 {
 	/**
-	 * @var  array  Security configuration
-	 *
-	 * @since  2.0.0
+	 * @var array
 	 */
-	protected $config = array();
+	protected $config = [];
 
 	/**
-	 * @var  Csrf  this objects csrf instance
-	 *
-	 * @since  2.0.0
+	 * @var Csrf
 	 */
 	protected $csrf;
 
 	/**
-	 * @var  array  list of loaded security filters
-	 *
-	 * @since  2.0.0
+	 * @var array
 	 */
-	protected $filters = array();
+	protected $filters = [];
 
 	/**
-	 * @var  array  list of cleaned variables
-	 *
-	 * @since  2.0.0
+	 * @var array
 	 */
-	protected $cleaned = array();
+	protected $cleaned = [];
 
 	/**
-	 * Setup the application security object.
-	 *
-	 * @param  array  $config  Security configuration array
-	 *
-	 * @return  void
-	 *
-	 * @since  2.0.0
+	 * @param array $config
 	 */
-	public function __construct(Array $config = array())
+	public function __construct(array $config = [])
 	{
 		// store the config passed
 		$this->config = $config;
@@ -66,20 +48,20 @@ class Manager
 		// make sure required config keys exist
 		if ( ! isset($this->config['uri_filter']))
 		{
-			$this->config['uri_filter'] = array();
+			$this->config['uri_filter'] = [];
 		}
 		if ( ! isset($this->config['input_filter']))
 		{
-			$this->config['input_filter'] = array();
+			$this->config['input_filter'] = [];
 		}
 		if ( ! isset($this->config['output_filter']))
 		{
-			$this->config['output_filter'] = array();
+			$this->config['output_filter'] = [];
 		}
 	}
 
 	/**
-	 * Get a Csrf instance
+	 * Returns a Csrf instance
 	 *
 	 * @return Csrf
 	 */
@@ -96,8 +78,8 @@ class Manager
 	/**
 	 * Cleans the request URI
 	 *
-	 * @param  string $uri     uri to clean
-	 * @param  bool   $strict  whether to remove relative directories
+	 * @param string  $uri
+	 * @param boolean $strict
 	 */
 	public function cleanUri($uri, $strict = false)
 	{
@@ -115,9 +97,9 @@ class Manager
 	/**
 	 * Generic variable clean method
 	 *
-	 * @param  mixed  $var     the variable to clean
-	 * @param  mixed  $filters list of filters to apply to the variable (method names or callables)
-	 * @param  string $type    default filter definition to apply if no filters are given
+	 * @param mixed  $var
+	 * @param mixed  $filters
+	 * @param string $type
 	 *
 	 */
 	public function clean($var, $filters = null, $type = 'input_filter')
@@ -125,11 +107,11 @@ class Manager
 		// if no filters are given, load the defaults from config
 		if ($filters === null)
 		{
-			$filters = isset($this->config[$type]) ? $this->config[$type] : array();
+			$filters = isset($this->config[$type]) ? $this->config[$type] : [];
 		}
 
 		// and make sure it's an array
-		$filters = is_array($filters) ? $filters : array($filters);
+		$filters = is_array($filters) ? $filters : [$filters];
 
 		foreach ($filters as $filter)
 		{
@@ -162,9 +144,9 @@ class Manager
 	}
 
 	/**
-	 * @param mixed $input variable to check
+	 * @param mixed $input
 	 *
-	 * @return bool, true if the variable was cleaned before
+	 * @return boolean
 	 */
 	public function isCleaned($input)
 	{
@@ -172,7 +154,7 @@ class Manager
 	}
 
 	/**
-	 * @param mixed $input a cleaned variable
+	 * @param mixed $input
 	 */
 	public function isClean($input)
 	{
@@ -180,9 +162,9 @@ class Manager
 	}
 
 	/**
-	 * @param  mixed $input  a variable to strip tags from
+	 * @param mixed $input
 	 *
-	 * @return  mixed
+	 * @return mixed
 	 */
 	public function stripTags($value)
 	{
@@ -202,9 +184,9 @@ class Manager
 	}
 
 	/**
-	 * @param  mixed $input  a variable to xssClean
+	 * @param mixed $input
 	 *
-	 * @return  mixed
+	 * @return mixed
 	 */
 	public function xssClean($value)
 	{
@@ -231,13 +213,13 @@ class Manager
 	}
 
 	/**
-	 * @param string $filter name of the filter class to load
+	 * @param string $filter
 	 *
-	 * @return bool
+	 * @return boolean
 	 */
 	protected function loadFilter($filter)
 	{
-		static $misses = array();
+		static $misses = [];
 
 		if ( ! in_array($filter, $misses))
 		{
@@ -261,8 +243,8 @@ class Manager
 	}
 
 	/**
-	 * @param  string  $key      config array key
-	 * @param  mixed   $default  value to return if the key doesn't exist
+	 * @param string $key
+	 * @param mixed  $default
 	 *
 	 * @return mixed
 	 */
@@ -272,8 +254,8 @@ class Manager
 	}
 
 	/**
-	 * @param mixed  $var   the variable to filter
-	 * @param string $filter  the regex to apply
+	 * @param mixed  $var
+	 * @param string $filter
 	 *
 	 * @return mixed
 	 */

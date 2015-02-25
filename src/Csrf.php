@@ -4,53 +4,42 @@
  * @version    2.0
  * @author     Fuel Development Team
  * @license    MIT License
- * @copyright  2010 - 2014 Fuel Development Team
+ * @copyright  2010 - 2015 Fuel Development Team
  * @link       http://fuelphp.com
  */
 
 namespace Fuel\Security;
 
+use Fuel\Session\Manager;
+use Fuel\Security\Csrf\Driver;
+
 /**
  * Security Csrf Manager class
- *
- * @package  Fuel\Security
- *
- * @since    2.0.0
  */
 class Csrf
 {
 	/**
-	 * @var  array  Security configuration
-	 *
-	 * @since  2.0.0
+	 * @var array
 	 */
-	protected $config = array();
+	protected $config = [];
 
 	/**
-	 * @var  Fuel\Session\Manager
-	 *
-	 * @since  2.0.0
+	 * @var Manager
 	 */
 	protected $session;
 
 	/**
-	 * @var  Fuel\Security\Csrf\Driver
-	 *
-	 * @since  2.0.0
+	 * @var Driver
 	 */
 	protected $driver;
 
 	/**
-	 * Constructor
+	 * @param array   $config
+	 * @param Manager $session
 	 *
-	 * @param  string               $driver  Csrf driver name or FQCN
-	 * @param  Fuel\Session\Manager $session Optional session driver instance
-	 *
-	 * @throws  RuntimeException  if the application does not have sessions activated
-	 *
-	 * @since  2.0.0
+	 * @throws \RuntimeException if the application does not have sessions activated
 	 */
-	public function __construct(Array $config = array(), \Fuel\Session\Manager $session = null)
+	public function __construct(array $config = [], Manager $session = null)
 	{
 		// store the config
 		$this->config = $config;
@@ -76,14 +65,14 @@ class Csrf
 	}
 
 	/**
-	 * Capture method calls so we can pass them on to the loaded driver
+	 * Captures method calls so we can pass them on to the loaded driver
 	 *
-	 * @param  string  $name       name of the method to call on the driver
-	 * @params mixed   $arguments  argument list to pass on
-	 *
-	 * @throws InvalidArgumentException  if the method is not callable on the driver
+	 * @param string  $name
+	 * @param mixed   $arguments
 	 *
 	 * @return mixed
+	 *
+	 * @throws \InvalidArgumentException if the method is not callable on the driver
 	 */
 	public function __call($name, $arguments)
 	{
@@ -96,11 +85,9 @@ class Csrf
 	}
 
 	/**
-	 * Get the session manager instance used for this Csrf manager
+	 * Returns the session manager instance used for this Csrf manager
 	 *
-	 * @return  Fuel\Session\Manager
-	 *
-	 * @since  2.0.0
+	 * @return Manager
 	 */
 	public function getSession()
 	{
@@ -108,13 +95,11 @@ class Csrf
 	}
 
 	/**
-	 * Pass a session manager instance to the Csrf manager at runtime
+	 * Sets a session manager instance to the Csrf manager at runtime
 	 *
-	 * @param  Fuel\Session\Manager  $session  Session manager instance
-	 *
-	 * @since  2.0.0
+	 * @param Manager $session
 	 */
-	public function setSession($session)
+	public function setSession(Manager $session)
 	{
 		$this->session = $session;
 	}

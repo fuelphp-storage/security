@@ -4,7 +4,7 @@
  * @version    2.0
  * @author     Fuel Development Team
  * @license    MIT License
- * @copyright  2010 - 2014 Fuel Development Team
+ * @copyright  2010 - 2015 Fuel Development Team
  * @link       http://fuelphp.com
  */
 
@@ -14,39 +14,27 @@ namespace Fuel\Security\Filter;
  * Security Base Filter class
  *
  * Basis for classes dealing with filtering variables for security purposes.
- *
- * @package  Fuel\Security
- *
- * @since    2.0.0
  */
 abstract class Base
 {
 	/**
-	 * @var  Security  parent security class that spawned this filter
-	 *
-	 * @since  2.0.0
+	 * @var Security
 	 */
 	protected $parent;
 
-	/**
-	 * Constructor
-	 *
-	 * @since  2.0.0
-	 */
 	public function __construct($parent)
 	{
 		$this->parent = $parent;
 	}
 
 	/**
-	 * Clean string, object or array
+	 * Cleans string, object or array
 	 *
-	 * @param   mixed $input
+	 * @param mixed $input
 	 *
-	 * @return  mixed
-	 * @throws  \RuntimeException if the variable passed can not be cleaned
+	 * @return mixed
 	 *
-	 * @since  2.0.0
+	 * @throws \RuntimeException if the variable passed can not be cleaned
 	 */
 	public function clean($input)
 	{
@@ -102,11 +90,9 @@ abstract class Base
 	/**
 	 * cleanString base method. Not defined as abstract become some filters might not implement cleaning strings
 	 *
-	 * @param   string
+	 * @param string $input
 	 *
-	 * @return  string
-	 *
-	 * @since  2.0.0
+	 * @return string
 	 */
 	protected function cleanString($input)
 	{
@@ -114,13 +100,11 @@ abstract class Base
 	}
 
 	/**
-	 * cleanArray base method.
+	 * cleanArray base method
 	 *
-	 * @param   string
+	 * @param string $input
 	 *
-	 * @return  string
-	 *
-	 * @since  2.0.0
+	 * @return string
 	 */
 	protected function cleanArray($input)
 	{
@@ -141,11 +125,9 @@ abstract class Base
 	/**
 	 * cleanObject base method. Not defined as abstract become some filters might not implement cleaning objects
 	 *
-	 * @param   object
+	 * @param object $input
 	 *
-	 * @return  object
-	 *
-	 * @since  2.0.0
+	 * @return object
 	 */
 	protected function cleanObject($input)
 	{

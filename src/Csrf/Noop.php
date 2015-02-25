@@ -4,7 +4,7 @@
  * @version    2.0
  * @author     Fuel Development Team
  * @license    MIT License
- * @copyright  2010 - 2014 Fuel Development Team
+ * @copyright  2010 - 2015 Fuel Development Team
  * @link       http://fuelphp.com
  */
 
@@ -14,19 +14,11 @@ namespace Fuel\Security\Csrf;
  * Security Csrf Noop class
  *
  * This class implements Noop, it doesn't do anything and validates all input
- *
- * @package  Fuel\Security
- *
- * @since    2.0.0
  */
 class Noop extends Driver
 {
 	/**
-	 * Generate a unique CSRF token for the given form identification
-	 *
-	 * @param  string  $id  Unique identification of the object to protect
-	 *
-	 * @since  2.0.0
+	 * {@inheritdoc}
 	 */
 	public function getToken($id)
 	{
@@ -34,12 +26,7 @@ class Noop extends Driver
 	}
 
 	/**
-	 * Validate a given token
-	 *
-	 * @param  string  $id     Unique identification of the object to protect
-	 * @param  string  $token  Token to validate
-	 *
-	 * @since  2.0.0
+	 * {@inheritdoc}
 	 */
 	public function validateToken($id, $token)
 	{
